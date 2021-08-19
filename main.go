@@ -3,74 +3,54 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
-	"strings"
+	"gaping/mynet"
+	"gaping/mynet/tcp"
+	"github.com/labstack/gommon/color"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"log"
 )
 
+type Config struct {
+	Host    string `yaml:"host"`
+	Port    int    `yaml:"port"`
+	Timeout int    `yaml:"timeout"`
+	Count   int    `yaml:"count"`
+}
+
 var (
-	help  bool
-	v, V  bool
-	h     string
-	p     int
-	types string
-	c     int
+	host, protocol string
+	port, count    int
+	timeout        int
+	cfg            Config
 )
 
 func init() {
-	flag.BoolVar(&help, "help", false, "Show gaping help")
-	flag.BoolVar(&v, "v", false, "Show Version and exit")
-	flag.BoolVar(&V, "V", false, "Show Version and exit")
-	flag.StringVar(&h, "h", "", "Dest host ipaddress")
-	flag.IntVar(&p, "p", 0, "Dest host port")
-	flag.StringVar(&types, "types", "tcp", "Set network protocol")
-	flag.IntVar(&c, "c", 100000000, "Tcp test conuts")
-}
-
-// version
-func Version() {
-	if v || V {
-		fmt.Println("gaping  v0.01")
-		os.Exit(0)
-	}
-}
-
-// help
-func Help() {
-	fmt.Println(`Gaping  v0.02- Copyright (c) 2019 Mike chulinx
-Example: pping -h 127.0.0.1,localhost -p 80 -type tcp`)
-	flag.PrintDefaults()
-	os.Exit(0)
-}
-
-// usage
-func Usages() {
-	if help {
-		Help()
-	}
+	flag.StringVar(&host, "h", "", "Dest host ipaddress")
+	flag.IntVar(&port, "p", 0, "Dest host port")
+	flag.StringVar(&protocol, "protocol", "tcp", "Set network protocol")
+	flag.IntVar(&count, "c", 100000000, "Tcp test conuts")
 }
 
 func main() {
 	flag.Parse()
-	Version()
-	Usages()
-	if h == "" || p == 0 {
-		Help()
-	}
-	hosts := strings.Split(h, ",")
-	protocol := SetProtocol(types)
-	if len(hosts) > 1 {
-
-		for i := 0; i < c; i++ {
-			for _, i := range hosts {
-				network := NewNetwork(i, p, protocol)
-				network.PingPrint()
-			}
+	if host == "" || port == 0 {
+		fmt.Printf(color.Red("host or port is empty. will try reading config from file\n"))
+		content, err := ioutil.ReadFile("./etc/app.yaml")
+		if err != nil {
+			log.Printf("read config content error:%s", err.Error())
+			return
 		}
-
-	} else {
-		network := NewNetwork(h, p, protocol)
-		for i := 0; i < c; i++ {
-			network.PingPrint()
+		err = yaml.Unmarshal(content, &cfg)
+		if err != nil {
+			log.Printf("parse config error:%s", err.Error())
+			return
 		}
+		host = cfg.Host
+		port = cfg.Port
+		count = cfg.Count
+		timeout = cfg.Timeout
 	}
+	w := mynet.NewWatcher(tcp.New(mynet.NewConfig(host, port, mynet.WithTimeout(timeout), mynet.WithCycleCount(count))))
+	w.Watch()
 }

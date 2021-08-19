@@ -1,9 +1,9 @@
-module zlx/zlxGO/study/gaping
+module gaping
 
-go 1.12
+go 1.14
 
 require (
-	github.com/labstack/gommon v0.2.8
-	github.com/mattn/go-colorable v0.1.1 // indirect
-	github.com/mattn/go-isatty v0.0.7 // indirect
+	github.com/gosuri/uilive v0.0.4
+	github.com/labstack/gommon v0.3.0
+	gopkg.in/yaml.v2 v2.2.2
 )

@@ -11,7 +11,7 @@
 ### 编译安装
   - Golang 1.11 or Golang 1.12
 ```bash
-git clone https://github.com/tianyazc/gaping.git && cd gaping && export GO111MODULE=on go build
+git clone https://github.com/tianyazc/gaping.git && cd watcher && export GO111MODULE=on go build
 ```
 
 ### 二进制文件下载
@@ -28,7 +28,7 @@ Example: pping -h 127.0.0.1,localhost -p 80 -type tcp
   -h string
     	Dest host ipaddress
   -help
-    	Show gaping help
+    	Show watcher help
   -p int
     	Dest host port
   -types string
@@ -62,7 +62,7 @@ $ ./gaping_darwin_amd64 -h 115.239.210.27 -p 80 -c 1
 ```
 - ping 多台主机一个端口
 ```bash
-$ ./gaping -h 127.0.0.1,localhost -p 1087 -types udp
+$ ./watcher -h 127.0.0.1,localhost -p 1087 -types udp
 2019-12-13 16:02:44 127.0.0.1 Connected to  127.0.0.1:1087: time=251µs protocol=udp port=1087
 2019-12-13 16:02:45 localhost Connected to  localhost:1087: time=6.779ms protocol=udp port=1087
 2019-12-13 16:02:46 127.0.0.1 Connected to  127.0.0.1:1087: time=283µs protocol=udp port=1087
