@@ -41,10 +41,16 @@ func (n *Tcp) Ping() {
 		date := time.Now().Format("2006-01-02 15:04:05")
 		err, timeout := n.Connect()
 		if err != nil {
-			fmt.Printf("%s Connect to %s:%s %s", date, color.Blue(n.c.Host()), color.Blue(n.c.Port()), color.Red("Connection timed out\n"))
+			if n.c.Echo() {
+				fmt.Printf("%s Connect to %s:%s %s", date, color.Blue(n.c.Host()), color.Blue(n.c.Port()), color.Red("Connection timed out\n"))
+			} else {
+				log.Printf("%s Connect to %s:%d %s", date, n.c.Host(), n.c.Port(), "Connection timed out\n")
+			}
 		} else {
-			fmt.Printf("%s Connected to  %s:%s protocol=%s timeout=%s\n",
-				date, color.Green(n.c.Host()), color.Green(n.c.Port()), color.Green(n.c.Protocol()), color.Green(timeout.String()))
+			if n.c.Echo() {
+				fmt.Printf("%s Connected to  %s:%s protocol=%s timeout=%s\n",
+					date, color.Green(n.c.Host()), color.Green(n.c.Port()), color.Green(n.c.Protocol()), color.Green(timeout.String()))
+			}
 		}
 		if timeout.Milliseconds() >= int64(n.c.Timeout()) {
 			log.Printf("%s Connected to  %s:%d protocol=%s timeout=%s\n",

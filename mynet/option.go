@@ -3,10 +3,11 @@ package mynet
 type Config struct {
 	host, protocol       string
 	port, count, timeout int
+	echo                 bool
 }
 
 func NewConfig(host string, port int, options ...Option) Config {
-	c := Config{host: host, port: port, protocol: "tcp", count: -1, timeout: 100}
+	c := Config{host: host, port: port, protocol: "tcp", count: -1, timeout: 100, echo: true}
 	for _, o := range options {
 		o.apply(&c)
 	}
@@ -35,6 +36,10 @@ func (c *Config) DecCount() {
 
 func (c *Config) Timeout() int {
 	return c.timeout
+}
+
+func (c *Config) Echo() bool {
+	return c.echo
 }
 
 type Option interface {
@@ -101,4 +106,16 @@ func (t timeoutOption) apply(c *Config) {
 
 func WithTimeout(t int) Option {
 	return timeoutOption{timeout: t}
+}
+
+type echoOption struct {
+	echo bool
+}
+
+func (e echoOption) apply(c *Config) {
+	c.echo = e.echo
+}
+
+func WithEcho(e bool) Option {
+	return echoOption{echo: e}
 }
