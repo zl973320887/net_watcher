@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"gaping/mynet"
-	"gaping/mynet/tcp"
 	"github.com/labstack/gommon/color"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
+	"watcher/mynet"
+	"watcher/mynet/tcp"
 )
 
 type Config struct {
@@ -26,10 +26,11 @@ var (
 )
 
 func init() {
-	flag.StringVar(&host, "h", "", "Dest host ipaddress")
-	flag.IntVar(&port, "p", 0, "Dest host port")
-	flag.StringVar(&protocol, "protocol", "tcp", "Set network protocol")
-	flag.IntVar(&count, "c", 100000000, "Tcp test conuts")
+	flag.StringVar(&host, "host", "", "destination host")
+	flag.IntVar(&port, "port", 0, "destination port")
+	flag.StringVar(&protocol, "protocol", "tcp", "network protocol")
+	flag.IntVar(&count, "count", -1, "test count")
+	flag.IntVar(&timeout, "timeout", -1, "timeout standard")
 }
 
 func main() {

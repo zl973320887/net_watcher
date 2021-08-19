@@ -2,11 +2,11 @@ package tcp
 
 import (
 	"fmt"
-	"gaping/mynet"
 	"github.com/labstack/gommon/color"
 	"github.com/labstack/gommon/log"
 	"net"
 	"time"
+	"watcher/mynet"
 )
 
 type Tcp struct {
